@@ -28,9 +28,6 @@ function wur_render_admin_page() {
     $position  = get_option('wur_position', 'right');
     $faqs_raw  = get_option('wur_faqs', '[]');
     $faqs      = json_decode($faqs_raw, true) ?: [];
-    $show_ass  = get_option('wur_show_assistant', '1');
-    $ass_greet = get_option('wur_assistant_greeting', '¡Hola! Soy el asistente de What\'s Up Rabbit?. ¿En qué puedo ayudarte?');
-
     // Color defaults
     $btn_color       = get_option('wur_button_color', '#25d366');
     $btn_text_color  = get_option('wur_button_text_color', '#ffffff');
@@ -71,7 +68,6 @@ function wur_render_admin_page() {
             <button class="wur-tab active" data-tab="general">General</button>
             <button class="wur-tab" data-tab="faqs">Preguntas Frecuentes</button>
             <button class="wur-tab" data-tab="design">Diseño</button>
-            <button class="wur-tab" data-tab="assistant">Asistente</button>
         </div>
 
         <form method="post" action="options.php" id="wur-form">
@@ -298,95 +294,10 @@ function wur_render_admin_page() {
                 </div>
             </div>
 
-            <!-- ══ TAB: ASISTENTE ════════════════════════════════════════ -->
-            <div class="wur-tab-content" id="tab-assistant">
-                <div class="wur-card">
-                    <h2 class="wur-card-title">Asistente What's Up Rabbit?</h2>
-                    <p class="wur-card-desc">El asistente es una burbuja flotante dentro del panel de administración de WordPress que te ayuda a configurar y sacar el máximo partido al plugin.</p>
-
-                    <table class="form-table wur-table">
-                        <tr>
-                            <th><label for="wur_show_assistant">Mostrar asistente en admin</label></th>
-                            <td>
-                                <input type="checkbox" name="wur_show_assistant" id="wur_show_assistant"
-                                       value="1" <?php checked('1', $show_ass); ?>>
-                                <label for="wur_show_assistant">Activar el asistente en el panel de WordPress</label>
-                                <p class="description">El asistente aparece en la esquina inferior derecha del panel de administración.</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label for="wur_assistant_greeting">Mensaje inicial del asistente</label></th>
-                            <td>
-                                <textarea name="wur_assistant_greeting" id="wur_assistant_greeting"
-                                          rows="3" cols="50"><?php echo esc_textarea($ass_greet); ?></textarea>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div class="wur-assistant-faqs-info">
-                        <h3>Preguntas que responde el asistente</h3>
-                        <div class="wur-assistant-faq-list">
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿Cómo añado mi número de WhatsApp?</strong>
-                                <p>Ve a la pestaña "General" e introduce tu número en formato internacional (ej: 34612345678 para España, sin espacios ni símbolos).</p>
-                            </div>
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿Cómo personalizo las preguntas frecuentes?</strong>
-                                <p>En la pestaña "Preguntas Frecuentes" puedes añadir, editar o eliminar las preguntas. Recomendamos entre 5 y 10 preguntas relevantes para tu negocio.</p>
-                            </div>
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿Por qué no se ve el widget en mi web?</strong>
-                                <p>Asegúrate de haber introducido un número de WhatsApp válido y de haber guardado los cambios. El widget aparece automáticamente en todas las páginas públicas.</p>
-                            </div>
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿Cómo cambio los colores del widget?</strong>
-                                <p>Ve a la pestaña "Diseño" y usa los selectores de color para personalizar la burbuja flotante, la cabecera y el botón de WhatsApp.</p>
-                            </div>
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿El bot funciona 24/7?</strong>
-                                <p>El widget siempre se muestra. Cuando el usuario selecciona una pregunta, ve la respuesta antes de abrir WhatsApp. Configura el mensaje offline para cuando no estés disponible.</p>
-                            </div>
-                            <div class="wur-assistant-faq-item">
-                                <strong>¿Puedo añadir el widget solo en algunas páginas?</strong>
-                                <p>Por defecto el widget aparece en todas las páginas. Si necesitas mostrarlo solo en algunas, puedes usar shortcodes o plugins de visibilidad como "Widget Logic".</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <?php submit_button('Guardar cambios', 'primary wur-save-btn', 'submit', true); ?>
         </form>
 
     </div>
-
-    <!-- ══ ASISTENTE FLOTANTE (solo en esta página) ══════════════════════ -->
-    <?php if ($show_ass === '1') : ?>
-    <div id="wur-assistant-bubble" class="wur-assistant-bubble" title="Asistente What's Up Rabbit?">
-        <img src="<?php echo esc_url(WUR_URL . 'WURabbitLogo.svg'); ?>" alt="Asistente" width="32" height="32">
-    </div>
-
-    <div id="wur-assistant-panel" class="wur-assistant-panel" style="display:none">
-        <div class="wur-assistant-header">
-            <div class="wur-assistant-header-left">
-                <img src="<?php echo esc_url(WUR_URL . 'WURabbitLogo.svg'); ?>" alt="" width="24" height="24" class="wur-assistant-icon">
-                <span>What's Up Rabbit? — Asistente</span>
-            </div>
-            <button id="wur-assistant-close">✕</button>
-        </div>
-        <div id="wur-assistant-messages" class="wur-assistant-messages">
-            <div class="wur-msg wur-msg-bot"><?php echo esc_html($ass_greet); ?></div>
-        </div>
-        <div class="wur-assistant-suggestions">
-            <div class="wur-suggestion" data-answer="Ve a la pestaña 'General' e introduce tu número en formato internacional (ej: 34612345678). Sin espacios ni guiones.">¿Cómo añado mi número de WhatsApp?</div>
-            <div class="wur-suggestion" data-answer="En la pestaña 'Preguntas Frecuentes' puedes añadir, editar y eliminar preguntas. Recomendamos entre 5 y 10 preguntas relevantes.">¿Cómo edito las FAQs?</div>
-            <div class="wur-suggestion" data-answer="Revisa que tienes un número de WhatsApp válido guardado. El widget se muestra automáticamente en todas las páginas públicas de tu web.">¿Por qué no veo el widget?</div>
-            <div class="wur-suggestion" data-answer="Ve a la pestaña 'Diseño' y usa los selectores de color para personalizar todos los elementos visuales del widget.">¿Cómo cambio los colores?</div>
-            <div class="wur-suggestion" data-answer="El widget siempre se muestra. Las respuestas se muestran dentro del widget. Para chats en vivo necesitas personal o un chatbot externo.">¿El bot responde automáticamente?</div>
-            <div class="wur-suggestion" data-answer="El número debe estar en formato internacional: código de país + número sin espacios. Para España: 34 + 9 dígitos (ej: 34612345678).">Formato correcto del número</div>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <?php
 }

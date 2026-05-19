@@ -104,12 +104,7 @@
         return 'invert(1) sepia(1) saturate(4) hue-rotate(' + hue + 'deg) brightness(' + bright + ')';
     }
 
-    function applyColorFilter(img, color) {
-        if (!img || !color || color === '') return;
-        img.style.filter = hexToFilter(color);
-    }
-
-
+    function buildFaqList() {
         if (!faqs.length) return '';
         var html = '<div class="wur-faq-title">Preguntas frecuentes</div><div class="wur-faq-list">';
         faqs.forEach(function (faq, i) {

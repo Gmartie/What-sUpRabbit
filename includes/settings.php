@@ -18,8 +18,6 @@ function wur_register_settings() {
         'wur_faqs',
         'wur_company_name',
         'wur_offline_message',
-        'wur_show_assistant',
-        'wur_assistant_greeting',
     ];
     foreach ($options as $opt) {
         register_setting('wur_settings_group', $opt);
