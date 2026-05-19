@@ -21,26 +21,19 @@
         wrap.className = 'wur-widget-wrap wur-pos-' + position;
         wrap.id = 'wur-widget';
 
-        // Bubble — logo directo sin fondo circular
+        // Bubble — logo SVG directo, sin burbuja ni fondo
         var bubble = document.createElement('button');
         bubble.className = 'wur-bubble';
         bubble.setAttribute('aria-label', "Abrir chat WhatsApp");
-        var bubbleIconUrl = cfg.bubbleIconUrl || logoUrl;
-        var bubbleColor   = cfg.bubbleColor || '#2d8a4e';
-        // If custom icon uploaded, show it as-is; otherwise show WUR logo colored
+        var bubbleColor = cfg.bubbleColor || '#2d8a4e';
+
         if (cfg.bubbleIconUrl) {
-            bubble.innerHTML = '<img src="' + bubbleIconUrl + '" alt="" class="wur-bubble-img wur-bubble-img-custom"><span class="wur-bubble-pulse"></span>';
+            // Custom icon: show as-is
+            bubble.innerHTML = '<img src="' + cfg.bubbleIconUrl + '" alt="" class="wur-bubble-img wur-bubble-img-custom"><span class="wur-bubble-pulse"></span>';
         } else {
-            // Show the SVG logo tinted in the chosen color (no circle background)
-            bubble.innerHTML = '<img src="' + logoUrl + '" alt="" class="wur-bubble-img" style="filter: none;"><span class="wur-bubble-pulse"></span>';
-            bubble.setAttribute('data-color', bubbleColor);
-            // Apply color as SVG tint using CSS filter hue trick or just use inline style color overlay
-            // We inject a small style so the SVG paths pick up the chosen color via CSS filter
-            var logoImg = bubble.querySelector('.wur-bubble-img');
-            logoImg.addEventListener('load', function() {
-                applyColorFilter(logoImg, bubbleColor);
-            });
-            applyColorFilter(bubble.querySelector('.wur-bubble-img'), bubbleColor);
+            // Default WUR logo: tint it with the chosen color via CSS filter
+            var colorFilter = hexToFilter(bubbleColor);
+            bubble.innerHTML = '<img src="' + logoUrl + '" alt="" class="wur-bubble-img" style="filter:' + colorFilter + '"><span class="wur-bubble-pulse"></span>';
         }
 
         // Panel
@@ -94,26 +87,25 @@
     }
 
     function hexToFilter(hex) {
-        // Convert hex color to a CSS filter approximation for SVG tinting
-        // For green #2d8a4e → hue-rotate + saturate approach
-        // Simple approach: use sepia + saturate + hue-rotate
-        var r = parseInt(hex.slice(1,3),16)/255;
-        var g = parseInt(hex.slice(3,5),16)/255;
-        var b = parseInt(hex.slice(5,7),16)/255;
-        // brightness check — dark colors need invert first
-        var lum = 0.299*r + 0.587*g + 0.114*b;
-        // Use a reliable approach: invert to white then apply color via sepia+saturate+hue-rotate
+        // For a given hex color, compute a CSS filter chain that tints a black SVG to that color.
+        // We use a known-good formula: invert → sepia → saturate → hue-rotate → brightness
+        var r = parseInt(hex.slice(1,3),16);
+        var g = parseInt(hex.slice(3,5),16);
+        var b = parseInt(hex.slice(5,7),16);
+        // hue in degrees
         var hue = Math.round(Math.atan2(
-            Math.sqrt(3)*(g-b),
-            2*r-g-b
+            Math.sqrt(3)*(g/255 - b/255),
+            2*r/255 - g/255 - b/255
         ) * (180/Math.PI));
         if (hue < 0) hue += 360;
-        return 'invert(1) sepia(1) saturate(3) hue-rotate(' + hue + 'deg) brightness(0.85)';
+        // brightness based on luminance
+        var lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+        var bright = Math.max(0.6, lum * 1.4).toFixed(2);
+        return 'invert(1) sepia(1) saturate(4) hue-rotate(' + hue + 'deg) brightness(' + bright + ')';
     }
 
     function applyColorFilter(img, color) {
-        if (!img || !color) return;
-        // Only apply if the logo is the WUR SVG (not custom)
+        if (!img || !color || color === '') return;
         img.style.filter = hexToFilter(color);
     }
 

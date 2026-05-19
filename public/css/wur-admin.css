@@ -42,17 +42,15 @@
     flex-shrink: 0;
     width: 72px;
     height: 72px;
-    background: var(--wur-green);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(45,138,78,.3);
 }
 .wur-logo {
-    width: 44px;
-    height: 44px;
-    filter: brightness(0) invert(1);
+    width: 72px;
+    height: 72px;
+    /* Tint the SVG green — all paths become #2d8a4e */
+    filter: invert(40%) sepia(60%) saturate(500%) hue-rotate(100deg) brightness(0.85);
 }
 .wur-header-text { flex: 1; }
 .wur-header-text h1 {

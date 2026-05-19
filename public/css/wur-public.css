@@ -11,13 +11,12 @@
 .wur-widget-wrap.wur-pos-right { right: 24px; }
 .wur-widget-wrap.wur-pos-left  { left: 24px; }
 
-/* ── Burbuja flotante — logo directo sin fondo circular ───────────────── */
+/* ── Burbuja flotante — logo SVG directo, sin fondo ni burbuja ─────────── */
 .wur-bubble {
-    width: auto;
-    height: auto;
     background: none !important;
-    border: none;
-    outline: none;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
     padding: 0;
     cursor: pointer;
     position: relative;
@@ -25,20 +24,20 @@
     align-items: center;
     justify-content: center;
     transition: transform .25s, filter .25s;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,.25));
 }
 .wur-bubble:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 6px 18px rgba(0,0,0,.4));
+    transform: scale(1.12);
+    filter: drop-shadow(0 5px 14px rgba(0,0,0,.35));
 }
-/* Logo SVG propio del plugin, tintado al color elegido */
+/* Logo SVG propio — tintado en verde */
 .wur-bubble-img {
     width: 64px;
     height: 64px;
     display: block;
     object-fit: contain;
 }
-/* Imagen custom subida por el usuario — sin tintado */
+/* Imagen custom subida por el usuario */
 .wur-bubble-img-custom {
     width: 64px;
     height: 64px;
