@@ -66,6 +66,9 @@
     position: absolute;
     bottom: 78px;
     width: 320px;
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 8px 32px rgba(0,0,0,.18);
@@ -76,7 +79,7 @@
 }
 .wur-pos-right .wur-panel { right: 0; }
 .wur-pos-left  .wur-panel { left: 0; }
-.wur-panel.wur-open { display: block; }
+.wur-panel.wur-open { display: flex; }
 @keyframes wurSlideIn {
     from { opacity: 0; transform: translateY(12px) scale(.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -145,6 +148,8 @@
     padding: 14px 14px 10px;
     background: #f0f0f0;
     min-height: 100px;
+    flex: 1;
+    overflow-y: auto;
 }
 .wur-welcome-bubble {
     background: #fff;
