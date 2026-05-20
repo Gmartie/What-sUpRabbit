@@ -59,10 +59,13 @@
         panel.id = 'wur-panel';
 
         // Header
-        var headerBg  = cfg.headerColor || '#2d8a4e';
-        var headerTxt = cfg.headerTextColor || '#ffffff';
+        var headerBg    = cfg.headerColor     || '#2d8a4e';
+        var headerTxt   = cfg.headerTextColor || '#ffffff';
+        var headerIcon  = cfg.headerIconUrl   || logoUrl;
+        var msgColor    = cfg.msgTextColor    || '#333333';
+
         panel.innerHTML = '<div class="wur-panel-header" style="background:' + headerBg + ';color:' + headerTxt + '">'
-            + '<div class="wur-panel-header-logo"><img src="' + logoUrl + '" alt="" width="24" height="24"></div>'
+            + '<div class="wur-panel-header-logo"><img src="' + headerIcon + '" alt="" width="24" height="24"></div>'
             + '<div class="wur-panel-header-info">'
             + '<div class="wur-panel-header-name">' + escHtml(cfg.companyName || 'Nuestro equipo') + '</div>'
             + '<div class="wur-panel-header-status"><span class="wur-status-dot"></span> En línea</div>'
@@ -71,8 +74,8 @@
             + '</div>'
 
             + '<div class="wur-panel-body" id="wur-body">'
-            + '<div class="wur-welcome-bubble">' + escHtml(cfg.welcomeMessage || '¡Hola! ¿En qué podemos ayudarte?') + '</div>'
-            + buildFaqList()
+            + '<div class="wur-welcome-bubble" style="color:' + msgColor + '">' + escHtml(cfg.welcomeMessage || '¡Hola! ¿En qué podemos ayudarte?') + '</div>'
+            + buildFaqList(msgColor)
             + '<div class="wur-answer-bubble" id="wur-answer"></div>'
             + '</div>'
 
@@ -121,11 +124,12 @@
         return 'invert(1) sepia(1) saturate(4) hue-rotate(' + hue + 'deg) brightness(' + bright + ')';
     }
 
-    function buildFaqList() {
+    function buildFaqList(msgColor) {
         if (!faqs.length) return '';
+        var color = msgColor || '#333333';
         var html = '<div class="wur-faq-title">Preguntas frecuentes</div><div class="wur-faq-list">';
         faqs.forEach(function (faq, i) {
-            html += '<button class="wur-faq-btn" data-idx="' + i + '">' + escHtml(faq.question) + '</button>';
+            html += '<button class="wur-faq-btn" data-idx="' + i + '" style="color:' + color + '">' + escHtml(faq.question) + '</button>';
         });
         html += '</div>';
         return html;
@@ -138,9 +142,9 @@
         selected = idx;
 
         var answerEl = document.getElementById('wur-answer');
-        // Mostrar pregunta como contexto + respuesta debajo
+        var msgColor = cfg.msgTextColor || '#333333';
         answerEl.innerHTML = '<div class="wur-answer-question">' + escHtml(faqs[idx].question) + '</div>'
-                           + '<div class="wur-answer-text">' + linkify(faqs[idx].answer) + '</div>';
+                           + '<div class="wur-answer-text" style="color:' + msgColor + '">' + linkify(faqs[idx].answer) + '</div>';
         answerEl.classList.add('wur-show');
     }
 

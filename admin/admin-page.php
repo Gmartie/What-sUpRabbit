@@ -39,6 +39,8 @@ function wur_render_admin_page() {
     $bubble_mode     = get_option('wur_bubble_mode', 'logo');     // 'logo' | 'circle'
     $bubble_bg_color = get_option('wur_bubble_bg_color', '#25d366');
     $button_style    = get_option('wur_button_style', '');         // 'bold','italic','underline' (coma-separados)
+    $header_icon_url = get_option('wur_header_icon_url', '');
+    $msg_text_color  = get_option('wur_msg_text_color', '#333333');
     ?>
     <div class="wrap wur-wrap">
 
@@ -175,12 +177,11 @@ function wur_render_admin_page() {
                     <h2 class="wur-card-title">Personalización del Widget</h2>
                     <table class="form-table wur-table">
                         <tr>
-                            <th>Burbuja flotante — fondo</th>
-                            <td><input type="text" name="wur_bubble_color" value="<?php echo esc_attr($bubble_color); ?>" class="wur-color-picker" data-default-color="#2d8a4e"></td>
-                        </tr>
-                        <tr>
-                            <th>Burbuja flotante — icono</th>
-                            <td><input type="text" name="wur_bubble_text_color" value="<?php echo esc_attr($bubble_text_col); ?>" class="wur-color-picker" data-default-color="#ffffff"></td>
+                            <th>Burbuja flotante — color del logo</th>
+                            <td>
+                                <input type="text" name="wur_bubble_color" value="<?php echo esc_attr($bubble_color); ?>" class="wur-color-picker" data-default-color="#2d8a4e">
+                                <p class="description">Solo aplica en modo "Logo sin fondo". Cambia el color del logo WUR flotante.</p>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="wur_bubble_icon_url">Icono de la burbuja flotante</label></th>
@@ -285,6 +286,75 @@ function wur_render_admin_page() {
                         <tr>
                             <th>Cabecera del widget — texto</th>
                             <td><input type="text" name="wur_header_text_color" value="<?php echo esc_attr($header_text_col); ?>" class="wur-color-picker" data-default-color="#ffffff"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="wur_header_icon_url">Cabecera del widget — icono</label></th>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                                    <input type="text" name="wur_header_icon_url" id="wur_header_icon_url"
+                                           value="<?php echo esc_attr($header_icon_url); ?>"
+                                           class="regular-text" placeholder="Deja vacío para usar el logo de What's Up Rabbit?">
+                                    <button type="button" class="button" id="wur-header-icon-upload-btn">Seleccionar imagen</button>
+                                    <?php if (!empty($header_icon_url)) : ?>
+                                    <button type="button" class="button" id="wur-header-icon-remove-btn">Quitar icono</button>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($header_icon_url)) : ?>
+                                <div style="margin-top:8px;">
+                                    <img src="<?php echo esc_url($header_icon_url); ?>"
+                                         style="max-width:48px;max-height:48px;border:1px solid #ddd;padding:4px;background:#f9f9f9;border-radius:6px;" alt="Vista previa cabecera">
+                                </div>
+                                <?php endif; ?>
+                                <p class="description">Icono que aparece a la izquierda del nombre de tu empresa en la cabecera del chat. Si lo dejas vacío se usa el logo de What's Up Rabbit?.</p>
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var uploadBtn = document.getElementById('wur-header-icon-upload-btn');
+                                    var removeBtn = document.getElementById('wur-header-icon-remove-btn');
+                                    var input     = document.getElementById('wur_header_icon_url');
+                                    if (!uploadBtn || !input) return;
+                                    var mediaFrame;
+                                    uploadBtn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        if (mediaFrame) { mediaFrame.open(); return; }
+                                        mediaFrame = wp.media({
+                                            title: 'Seleccionar icono para la cabecera',
+                                            button: { text: 'Usar este icono' },
+                                            multiple: false
+                                        });
+                                        mediaFrame.on('select', function() {
+                                            var att = mediaFrame.state().get('selection').first().toJSON();
+                                            input.value = att.url;
+                                            var prev = input.closest('td').querySelector('img[alt="Vista previa cabecera"]');
+                                            if (prev) { prev.src = att.url; }
+                                            else {
+                                                var wrap = document.createElement('div');
+                                                wrap.style.marginTop = '8px';
+                                                var img = document.createElement('img');
+                                                img.src = att.url; img.alt = 'Vista previa cabecera';
+                                                img.style.cssText = 'max-width:48px;max-height:48px;border:1px solid #ddd;padding:4px;background:#f9f9f9;border-radius:6px;';
+                                                wrap.appendChild(img);
+                                                input.closest('td').insertBefore(wrap, input.closest('td').querySelector('p.description'));
+                                            }
+                                        });
+                                        mediaFrame.open();
+                                    });
+                                    if (removeBtn) {
+                                        removeBtn.addEventListener('click', function() {
+                                            input.value = '';
+                                            var prev = input.closest('td').querySelector('img[alt="Vista previa cabecera"]');
+                                            if (prev) prev.parentNode.remove();
+                                        });
+                                    }
+                                });
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Texto de mensajes y respuestas</th>
+                            <td>
+                                <input type="text" name="wur_msg_text_color" value="<?php echo esc_attr($msg_text_color); ?>" class="wur-color-picker" data-default-color="#333333">
+                                <p class="description">Color del texto del mensaje de bienvenida, respuestas de FAQ y botones de pregunta.</p>
+                            </td>
                         </tr>
                         <tr>
                             <th>Botón "Abrir WhatsApp" — fondo</th>

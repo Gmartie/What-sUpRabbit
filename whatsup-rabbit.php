@@ -2,7 +2,7 @@
 /**
  * Plugin Name: What's Up Rabbit?
  * Description: Bot de preguntas frecuentes para WhatsApp. Responde automáticamente las dudas más comunes sobre tu empresa de páginas web.
- * Version: beta 1.1
+ * Version: beta 1.2
  * Author: Gabriel
  * Text Domain: whatsup-rabbit
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) exit;
 
 define('WUR_PATH', plugin_dir_path(__FILE__));
 define('WUR_URL',  plugin_dir_url(__FILE__));
-define('WUR_VERSION', 'beta 1.1');
+define('WUR_VERSION', 'beta 1.2');
 
 require_once WUR_PATH . 'includes/settings.php';
 require_once WUR_PATH . 'includes/ajax.php';

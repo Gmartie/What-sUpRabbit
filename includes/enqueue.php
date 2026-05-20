@@ -23,6 +23,8 @@ function wur_enqueue_public() {
         'bubbleMode'      => get_option('wur_bubble_mode', 'logo'),
         'bubbleBgColor'   => get_option('wur_bubble_bg_color', '#25d366'),
         'buttonStyle'     => get_option('wur_button_style', ''),
+        'headerIconUrl'   => get_option('wur_header_icon_url', ''),
+        'msgTextColor'    => get_option('wur_msg_text_color', '#333333'),
         'position'        => get_option('wur_position', 'right'),
         'companyName'     => get_option('wur_company_name', 'Nuestra empresa'),
         'offlineMessage'  => get_option('wur_offline_message', 'Estamos offline en este momento. Te responderemos pronto.'),
