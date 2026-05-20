@@ -22,6 +22,8 @@ function wur_register_settings() {
         'wur_bubble_bg_color',
         'wur_button_style',
         'wur_header_icon_url',
+        'wur_header_icon_mode',
+        'wur_header_icon_color',
         'wur_msg_text_color',
     ];
     foreach ($options as $opt) {

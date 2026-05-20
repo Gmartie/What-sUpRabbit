@@ -59,13 +59,25 @@
         panel.id = 'wur-panel';
 
         // Header
-        var headerBg    = cfg.headerColor     || '#2d8a4e';
-        var headerTxt   = cfg.headerTextColor || '#ffffff';
-        var headerIcon  = cfg.headerIconUrl   || logoUrl;
-        var msgColor    = cfg.msgTextColor    || '#333333';
+        var headerBg    = cfg.headerColor       || '#2d8a4e';
+        var headerTxt   = cfg.headerTextColor   || '#ffffff';
+        var headerIcon  = cfg.headerIconUrl     || logoUrl;
+        var headerIconMode  = cfg.headerIconMode  || 'bubble'; // 'bubble' | 'direct'
+        var headerIconColor = cfg.headerIconColor || '';        // hex o vacío = blanco por defecto
+        var msgColor    = cfg.msgTextColor      || '#333333';
+
+        // Filtro CSS para colorear el icono de cabecera
+        var headerImgStyle = '';
+        if (headerIconColor) {
+            headerImgStyle = ' style="filter:' + hexToFilter(headerIconColor) + '"';
+        } else {
+            // Sin color personalizado → blanco (comportamiento previo)
+            headerImgStyle = ' style="filter:brightness(0) invert(1)"';
+        }
+        var headerLogoClass = 'wur-panel-header-logo ' + (headerIconMode === 'direct' ? 'wur-header-direct' : 'wur-header-bubble');
 
         panel.innerHTML = '<div class="wur-panel-header" style="background:' + headerBg + ';color:' + headerTxt + '">'
-            + '<div class="wur-panel-header-logo"><img src="' + headerIcon + '" alt="" width="24" height="24"></div>'
+            + '<div class="' + headerLogoClass + '"><img src="' + headerIcon + '" alt=""' + headerImgStyle + '></div>'
             + '<div class="wur-panel-header-info">'
             + '<div class="wur-panel-header-name">' + escHtml(cfg.companyName || 'Nuestro equipo') + '</div>'
             + '<div class="wur-panel-header-status"><span class="wur-status-dot"></span> En línea</div>'

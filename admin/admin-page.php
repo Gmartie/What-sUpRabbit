@@ -39,7 +39,9 @@ function wur_render_admin_page() {
     $bubble_mode     = get_option('wur_bubble_mode', 'logo');     // 'logo' | 'circle'
     $bubble_bg_color = get_option('wur_bubble_bg_color', '#25d366');
     $button_style    = get_option('wur_button_style', '');         // 'bold','italic','underline' (coma-separados)
-    $header_icon_url = get_option('wur_header_icon_url', '');
+    $header_icon_url   = get_option('wur_header_icon_url', '');
+    $header_icon_mode  = get_option('wur_header_icon_mode', 'bubble');  // 'bubble' | 'direct'
+    $header_icon_color = get_option('wur_header_icon_color', '');       // hex o vacío
     $msg_text_color  = get_option('wur_msg_text_color', '#333333');
     ?>
     <div class="wrap wur-wrap">
@@ -347,6 +349,30 @@ function wur_render_admin_page() {
                                     }
                                 });
                                 </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label>Icono de cabecera — estilo</label></th>
+                            <td>
+                                <label style="margin-right:16px">
+                                    <input type="radio" name="wur_header_icon_mode" value="bubble"
+                                           <?php checked('bubble', $header_icon_mode); ?>>
+                                    Con burbuja (círculo semitransparente alrededor)
+                                </label>
+                                <label>
+                                    <input type="radio" name="wur_header_icon_mode" value="direct"
+                                           <?php checked('direct', $header_icon_mode); ?>>
+                                    Directo (solo el icono, sin fondo)
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="wur_header_icon_color">Icono de cabecera — color</label></th>
+                            <td>
+                                <input type="text" name="wur_header_icon_color" id="wur_header_icon_color"
+                                       value="<?php echo esc_attr($header_icon_color); ?>"
+                                       class="wur-color-picker" data-default-color="#ffffff">
+                                <p class="description">Deja el valor por defecto (blanco) si quieres el icono en blanco sobre la cabecera de color.</p>
                             </td>
                         </tr>
                         <tr>

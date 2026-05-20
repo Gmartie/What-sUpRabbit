@@ -24,6 +24,8 @@ function wur_enqueue_public() {
         'bubbleBgColor'   => get_option('wur_bubble_bg_color', '#25d366'),
         'buttonStyle'     => get_option('wur_button_style', ''),
         'headerIconUrl'   => get_option('wur_header_icon_url', ''),
+        'headerIconMode'  => get_option('wur_header_icon_mode', 'bubble'),
+        'headerIconColor' => get_option('wur_header_icon_color', ''),
         'msgTextColor'    => get_option('wur_msg_text_color', '#333333'),
         'position'        => get_option('wur_position', 'right'),
         'companyName'     => get_option('wur_company_name', 'Nuestra empresa'),
