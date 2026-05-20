@@ -25,6 +25,13 @@ function wur_register_settings() {
         'wur_header_icon_mode',
         'wur_header_icon_color',
         'wur_msg_text_color',
+        // NEW: horario, agentes, notificacion
+        'wur_schedule_enabled',
+        'wur_schedule_days',
+        'wur_schedule_start',
+        'wur_schedule_end',
+        'wur_agents',
+        'wur_notification_timeout',
     ];
     foreach ($options as $opt) {
         register_setting('wur_settings_group', $opt);
@@ -38,4 +45,13 @@ add_filter('pre_update_option_wur_button_style', function ($new_value) {
         $new_value = implode(',', array_intersect($new_value, $allowed));
     }
     return sanitize_text_field($new_value);
+});
+
+/* Sanitize wur_schedule_days array → JSON */
+add_filter('pre_update_option_wur_schedule_days', function ($new_value) {
+    if (is_array($new_value)) {
+        $allowed = ['mon','tue','wed','thu','fri','sat','sun'];
+        $new_value = json_encode(array_values(array_intersect($new_value, $allowed)));
+    }
+    return $new_value;
 });
