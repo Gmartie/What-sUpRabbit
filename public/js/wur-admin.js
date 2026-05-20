@@ -19,6 +19,11 @@
 
     applyPreviewColors();
 
+    /* ── Bubble mode toggle ──────────────────────────────────────────── */
+    $('input[name="wur_bubble_mode"]').on('change', function () {
+        $('#wur-bubble-bg-row').toggle($(this).val() === 'circle');
+    });
+
     /* ── Tabs ────────────────────────────────────────────────────────── */
     $('.wur-tab').on('click', function () {
         var tabId = $(this).data('tab');

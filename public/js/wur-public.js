@@ -21,20 +21,37 @@
         wrap.className = 'wur-widget-wrap wur-pos-' + position;
         wrap.id = 'wur-widget';
 
-        // Bubble — logo SVG directo, sin burbuja ni fondo
+        // Bubble
         var bubble = document.createElement('button');
         bubble.className = 'wur-bubble';
         bubble.setAttribute('aria-label', "Abrir chat WhatsApp");
-        var bubbleColor = cfg.bubbleColor || '#2d8a4e';
+        var bubbleColor  = cfg.bubbleColor  || '#2d8a4e';
+        var bubbleMode   = cfg.bubbleMode   || 'logo';   // 'logo' | 'circle'
+        var bubbleBgColor = cfg.bubbleBgColor || bubbleColor;
 
-        if (cfg.bubbleIconUrl) {
-            // Custom icon: show as-is
-            bubble.innerHTML = '<img src="' + cfg.bubbleIconUrl + '" alt="" class="wur-bubble-img wur-bubble-img-custom"><span class="wur-bubble-pulse"></span>';
+        if (bubbleMode === 'circle') {
+            // Modo burbuja: círculo coloreado con icono encima
+            var iconHtml = cfg.bubbleIconUrl
+                ? '<img src="' + cfg.bubbleIconUrl + '" alt="" class="wur-bubble-inner-img">'
+                : whatsappIcon();
+            bubble.innerHTML = '<span class="wur-bubble-circle" style="background:' + bubbleBgColor + '">'
+                + iconHtml
+                + '</span><span class="wur-bubble-pulse"></span>';
         } else {
-            // Default WUR logo: tint it with the chosen color via CSS filter
-            var colorFilter = hexToFilter(bubbleColor);
-            bubble.innerHTML = '<img src="' + logoUrl + '" alt="" class="wur-bubble-img" style="filter:' + colorFilter + '"><span class="wur-bubble-pulse"></span>';
+            // Modo logo (por defecto)
+            if (cfg.bubbleIconUrl) {
+                bubble.innerHTML = '<img src="' + cfg.bubbleIconUrl + '" alt="" class="wur-bubble-img wur-bubble-img-custom"><span class="wur-bubble-pulse"></span>';
+            } else {
+                var colorFilter = hexToFilter(bubbleColor);
+                bubble.innerHTML = '<img src="' + logoUrl + '" alt="" class="wur-bubble-img" style="filter:' + colorFilter + '"><span class="wur-bubble-pulse"></span>';
+            }
         }
+
+        // Formato del botón CTA
+        var btnStyle = cfg.buttonStyle || '';
+        var btnFontWeight  = btnStyle.indexOf('bold')      !== -1 ? 'bold'    : 'normal';
+        var btnFontStyle   = btnStyle.indexOf('italic')    !== -1 ? 'italic'  : 'normal';
+        var btnTextDecor   = btnStyle.indexOf('underline') !== -1 ? 'underline' : 'none';
 
         // Panel
         var panel = document.createElement('div');
@@ -60,7 +77,7 @@
             + '</div>'
 
             + '<div class="wur-panel-footer">'
-            + '<button class="wur-wa-btn" id="wur-open-wa" style="background:' + (cfg.buttonColor || '#25d366') + ';color:' + (cfg.buttonTextColor || '#fff') + '">'
+            + '<button class="wur-wa-btn" id="wur-open-wa" style="background:' + (cfg.buttonColor || '#25d366') + ';color:' + (cfg.buttonTextColor || '#fff') + ';font-weight:' + btnFontWeight + ';font-style:' + btnFontStyle + ';text-decoration:' + btnTextDecor + '">'
             + whatsappIcon()
             + '<span>' + escHtml(cfg.buttonText || 'Chatea por WhatsApp') + '</span>'
             + '</button>'
@@ -121,7 +138,9 @@
         selected = idx;
 
         var answerEl = document.getElementById('wur-answer');
-        answerEl.innerHTML = linkify(faqs[idx].answer);   // innerHTML para renderizar <a>
+        // Mostrar pregunta como contexto + respuesta debajo
+        answerEl.innerHTML = '<div class="wur-answer-question">' + escHtml(faqs[idx].question) + '</div>'
+                           + '<div class="wur-answer-text">' + linkify(faqs[idx].answer) + '</div>';
         answerEl.classList.add('wur-show');
     }
 

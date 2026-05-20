@@ -36,6 +36,9 @@ function wur_render_admin_page() {
     $bubble_color    = get_option('wur_bubble_color', '#2d8a4e');
     $bubble_text_col = get_option('wur_bubble_text_color', '#ffffff');
     $bubble_icon_url = get_option('wur_bubble_icon_url', '');
+    $bubble_mode     = get_option('wur_bubble_mode', 'logo');     // 'logo' | 'circle'
+    $bubble_bg_color = get_option('wur_bubble_bg_color', '#25d366');
+    $button_style    = get_option('wur_button_style', '');         // 'bold','italic','underline' (coma-separados)
     ?>
     <div class="wrap wur-wrap">
 
@@ -248,6 +251,33 @@ function wur_render_admin_page() {
                                 </script>
                             </td>
                         </tr>
+                        <!-- Modo burbuja -->
+                        <tr>
+                            <th><label>Estilo de la burbuja flotante</label></th>
+                            <td>
+                                <fieldset>
+                                    <label style="margin-right:16px">
+                                        <input type="radio" name="wur_bubble_mode" value="logo"
+                                               <?php checked('logo', $bubble_mode); ?>>
+                                        Logo sin fondo (por defecto)
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="wur_bubble_mode" value="circle"
+                                               <?php checked('circle', $bubble_mode); ?>>
+                                        Burbuja circular con color de fondo
+                                    </label>
+                                </fieldset>
+                                <p class="description">En modo "burbuja circular" se muestra un círculo coloreado con el icono dentro. Puedes subir tu propio icono arriba.</p>
+                            </td>
+                        </tr>
+                        <tr id="wur-bubble-bg-row" <?php echo $bubble_mode !== 'circle' ? 'style="display:none"' : ''; ?>>
+                            <th><label for="wur_bubble_bg_color">Burbuja circular — color de fondo</label></th>
+                            <td>
+                                <input type="text" name="wur_bubble_bg_color" id="wur_bubble_bg_color"
+                                       value="<?php echo esc_attr($bubble_bg_color); ?>"
+                                       class="wur-color-picker" data-default-color="#25d366">
+                            </td>
+                        </tr>
                         <tr>
                             <th>Cabecera del widget — fondo</th>
                             <td><input type="text" name="wur_header_color" value="<?php echo esc_attr($header_color); ?>" class="wur-color-picker" data-default-color="#2d8a4e"></td>
@@ -263,6 +293,26 @@ function wur_render_admin_page() {
                         <tr>
                             <th>Botón "Abrir WhatsApp" — texto</th>
                             <td><input type="text" name="wur_button_text_color" value="<?php echo esc_attr($btn_text_color); ?>" class="wur-color-picker" data-default-color="#ffffff"></td>
+                        </tr>
+                        <tr>
+                            <th><label>Botón "Abrir WhatsApp" — formato</label></th>
+                            <td>
+                                <label style="margin-right:12px">
+                                    <input type="checkbox" name="wur_button_style[]" value="bold"
+                                           <?php checked(true, strpos($button_style, 'bold') !== false); ?>>
+                                    <strong>Negrita</strong>
+                                </label>
+                                <label style="margin-right:12px">
+                                    <input type="checkbox" name="wur_button_style[]" value="italic"
+                                           <?php checked(true, strpos($button_style, 'italic') !== false); ?>>
+                                    <em>Cursiva</em>
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="wur_button_style[]" value="underline"
+                                           <?php checked(true, strpos($button_style, 'underline') !== false); ?>>
+                                    <span style="text-decoration:underline">Subrayado</span>
+                                </label>
+                            </td>
                         </tr>
                     </table>
 

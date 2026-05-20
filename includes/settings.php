@@ -18,8 +18,20 @@ function wur_register_settings() {
         'wur_faqs',
         'wur_company_name',
         'wur_offline_message',
+        'wur_bubble_mode',
+        'wur_bubble_bg_color',
+        'wur_button_style',
     ];
     foreach ($options as $opt) {
         register_setting('wur_settings_group', $opt);
     }
 }
+
+/* Sanitize wur_button_style array → string */
+add_filter('pre_update_option_wur_button_style', function ($new_value) {
+    if (is_array($new_value)) {
+        $allowed = ['bold', 'italic', 'underline'];
+        $new_value = implode(',', array_intersect($new_value, $allowed));
+    }
+    return sanitize_text_field($new_value);
+});
