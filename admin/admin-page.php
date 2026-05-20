@@ -299,5 +299,31 @@ function wur_render_admin_page() {
 
     </div>
 
+    <!-- ══ ASISTENTE FLOTANTE (siempre visible en todas las pestañas) ══════ -->
+    <div id="wur-assistant-bubble" class="wur-assistant-bubble" title="Asistente What's Up Rabbit?">
+        <img src="<?php echo esc_url(WUR_URL . 'WURabbitLogo.svg'); ?>" alt="Asistente" width="32" height="32">
+    </div>
+
+    <div id="wur-assistant-panel" class="wur-assistant-panel" style="display:none">
+        <div class="wur-assistant-header">
+            <div class="wur-assistant-header-left">
+                <img src="<?php echo esc_url(WUR_URL . 'WURabbitLogo.svg'); ?>" alt="" width="24" height="24" class="wur-assistant-icon">
+                <span>What's Up Rabbit? — Asistente</span>
+            </div>
+            <button id="wur-assistant-close" type="button">✕</button>
+        </div>
+        <div id="wur-assistant-messages" class="wur-assistant-messages">
+            <div class="wur-msg wur-msg-bot">¡Hola! Soy el asistente de What's Up Rabbit?. ¿En qué puedo ayudarte?</div>
+        </div>
+        <div class="wur-assistant-suggestions">
+            <div class="wur-suggestion" data-answer="Ve a la pestaña 'General' e introduce tu número en formato internacional (ej: 34612345678). Sin espacios ni guiones.">¿Cómo añado mi número de WhatsApp?</div>
+            <div class="wur-suggestion" data-answer="En la pestaña 'Preguntas Frecuentes' puedes añadir, editar y eliminar preguntas. Recomendamos entre 5 y 10 preguntas relevantes. En las respuestas puedes insertar enlaces con el botón 🔗.">¿Cómo edito las FAQs?</div>
+            <div class="wur-suggestion" data-answer="Revisa que tienes un número de WhatsApp válido guardado. Si el número está bien y el widget sigue sin aparecer, desactiva otros plugins de caché y recarga la web.">¿Por qué no veo el widget?</div>
+            <div class="wur-suggestion" data-answer="Ve a la pestaña 'Diseño' y usa los selectores de color. La vista previa se actualiza en tiempo real al elegir los colores.">¿Cómo cambio los colores?</div>
+            <div class="wur-suggestion" data-answer="En la pestaña 'Preguntas Frecuentes', dentro de cualquier respuesta, haz clic en el botón 🔗 para insertar un enlace. Puedes usar URLs completas (https://...) o relativas (/tu-pagina/).">¿Cómo añado un enlace en una respuesta?</div>
+            <div class="wur-suggestion" data-answer="El número debe estar en formato internacional: código de país + número sin espacios. Para España: 34 + 9 dígitos (ej: 34612345678).">Formato correcto del número</div>
+        </div>
+    </div>
+
     <?php
 }

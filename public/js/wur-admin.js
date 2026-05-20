@@ -2,8 +2,22 @@
 (function ($) {
     'use strict';
 
-    /* ── Color pickers ───────────────────────────────────────────────── */
-    $('.wur-color-picker').wpColorPicker();
+    /* ── Color pickers + live preview ────────────────────────────────── */
+    function applyPreviewColors() {
+        var headerBg  = $('[name="wur_header_color"]').val()      || '#2d8a4e';
+        var headerTxt = $('[name="wur_header_text_color"]').val() || '#ffffff';
+        var btnBg     = $('[name="wur_button_color"]').val()      || '#25d366';
+        var btnTxt    = $('[name="wur_button_text_color"]').val() || '#ffffff';
+        $('.wur-preview-header').css({ background: headerBg, color: headerTxt });
+        $('.wur-preview-btn').css({ background: btnBg, color: btnTxt });
+    }
+
+    $('.wur-color-picker').wpColorPicker({
+        change: function () { setTimeout(applyPreviewColors, 50); },
+        clear:  function () { setTimeout(applyPreviewColors, 50); }
+    });
+
+    applyPreviewColors();
 
     /* ── Tabs ────────────────────────────────────────────────────────── */
     $('.wur-tab').on('click', function () {
@@ -23,6 +37,11 @@
         });
     }
 
+    /* Botón insertar enlace — abre un mini-diálogo inline */
+    function insertLinkBtn() {
+        return '<button type="button" class="button wur-insert-link-btn" title="Insertar enlace en la respuesta">🔗 Insertar enlace</button>';
+    }
+
     function addFaqRow(question, answer) {
         var row = $('<div class="wur-faq-row">'
             + '<div class="wur-faq-header">'
@@ -32,6 +51,16 @@
             + '<div class="wur-faq-fields">'
             + '<input type="text" class="wur-faq-question regular-text" placeholder="Pregunta (ej: ¿Cuánto cuesta una web?)" value="">'
             + '<textarea class="wur-faq-answer" rows="3" placeholder="Respuesta que se mostrará al usuario"></textarea>'
+            + '<div class="wur-faq-link-toolbar">'
+            + insertLinkBtn()
+            + '<div class="wur-link-popup" style="display:none">'
+            + '<input type="text" class="wur-link-text-input" placeholder="Texto del enlace">'
+            + '<input type="text" class="wur-link-url-input" placeholder="URL (https://... o /pagina/)">'
+            + '<label class="wur-link-newwin"><input type="checkbox" class="wur-link-newwin-chk" checked> Abrir en nueva pestaña</label>'
+            + '<div class="wur-link-actions">'
+            + '<button type="button" class="button button-primary wur-link-confirm">Insertar</button>'
+            + '<button type="button" class="button wur-link-cancel">Cancelar</button>'
+            + '</div></div></div>'
             + '</div>'
             + '</div>');
         if (question) row.find('.wur-faq-question').val(question);
@@ -40,6 +69,24 @@
         updateFaqNumbers();
     }
 
+    /* Repopulate existing rows with the link toolbar */
+    $wrapper.find('.wur-faq-row').each(function () {
+        if (!$(this).find('.wur-faq-link-toolbar').length) {
+            $(this).find('.wur-faq-fields').append(
+                '<div class="wur-faq-link-toolbar">'
+                + insertLinkBtn()
+                + '<div class="wur-link-popup" style="display:none">'
+                + '<input type="text" class="wur-link-text-input" placeholder="Texto del enlace">'
+                + '<input type="text" class="wur-link-url-input" placeholder="URL (https://... o /pagina/)">'
+                + '<label class="wur-link-newwin"><input type="checkbox" class="wur-link-newwin-chk" checked> Abrir en nueva pestaña</label>'
+                + '<div class="wur-link-actions">'
+                + '<button type="button" class="button button-primary wur-link-confirm">Insertar</button>'
+                + '<button type="button" class="button wur-link-cancel">Cancelar</button>'
+                + '</div></div></div>'
+            );
+        }
+    });
+
     $('.wur-add-faq').on('click', function () {
         addFaqRow('', '');
     });
@@ -47,6 +94,46 @@
     $wrapper.on('click', '.wur-remove-faq', function () {
         $(this).closest('.wur-faq-row').remove();
         updateFaqNumbers();
+    });
+
+    /* ── Link popup logic ────────────────────────────────────────────── */
+    $wrapper.on('click', '.wur-insert-link-btn', function () {
+        var $row   = $(this).closest('.wur-faq-row');
+        var $popup = $row.find('.wur-link-popup');
+        // Pre-fill text with any selection in the textarea
+        var $ta  = $row.find('.wur-faq-answer');
+        var ta   = $ta[0];
+        var sel  = ta.value.substring(ta.selectionStart, ta.selectionEnd);
+        $popup.find('.wur-link-text-input').val(sel);
+        $popup.find('.wur-link-url-input').val('');
+        $popup.toggle();
+    });
+
+    $wrapper.on('click', '.wur-link-cancel', function () {
+        $(this).closest('.wur-link-popup').hide();
+    });
+
+    $wrapper.on('click', '.wur-link-confirm', function () {
+        var $popup  = $(this).closest('.wur-link-popup');
+        var $row    = $popup.closest('.wur-faq-row');
+        var $ta     = $row.find('.wur-faq-answer');
+        var ta      = $ta[0];
+        var text    = $popup.find('.wur-link-text-input').val().trim();
+        var url     = $popup.find('.wur-link-url-input').val().trim();
+        var newwin  = $popup.find('.wur-link-newwin-chk').is(':checked');
+
+        if (!url) { alert('Introduce una URL.'); return; }
+        if (!text) text = url;
+
+        // Insert markdown-style link: [texto](url) [nueva_pestaña]
+        var tag = newwin ? '[' + text + '](' + url + '){target=_blank}' : '[' + text + '](' + url + ')';
+
+        var start = ta.selectionStart;
+        var end   = ta.selectionEnd;
+        ta.value  = ta.value.substring(0, start) + tag + ta.value.substring(end);
+        ta.selectionStart = ta.selectionEnd = start + tag.length;
+        $ta.trigger('input');
+        $popup.hide();
     });
 
     // Serialize FAQs on form submit
@@ -61,9 +148,9 @@
     });
 
     /* ── Asistente flotante ──────────────────────────────────────────── */
-    var $bubble  = $('#wur-assistant-bubble');
-    var $panel   = $('#wur-assistant-panel');
-    var $msgs    = $('#wur-assistant-messages');
+    var $bubble   = $('#wur-assistant-bubble');
+    var $panel    = $('#wur-assistant-panel');
+    var $msgs     = $('#wur-assistant-messages');
     var panelOpen = false;
 
     $bubble.on('click', function () {

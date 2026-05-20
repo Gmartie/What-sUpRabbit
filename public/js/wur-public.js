@@ -121,7 +121,7 @@
         selected = idx;
 
         var answerEl = document.getElementById('wur-answer');
-        answerEl.textContent = faqs[idx].answer;
+        answerEl.innerHTML = linkify(faqs[idx].answer);   // innerHTML para renderizar <a>
         answerEl.classList.add('wur-show');
     }
 
@@ -146,6 +146,34 @@
     function escHtml(str) {
         if (!str) return '';
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /**
+     * Renderiza texto con enlaces en formato [texto](url) o [texto](url){target=_blank}
+     * como etiquetas <a> reales. El resto del texto se escapa para seguridad.
+     */
+    function linkify(str) {
+        if (!str) return '';
+        // Regex: [texto](url){target=_blank} o [texto](url)
+        var parts = [];
+        var re = /\[([^\]]+)\]\(([^)]+)\)(\{target=_blank\})?/g;
+        var last = 0, m;
+        while ((m = re.exec(str)) !== null) {
+            // texto plano antes del enlace
+            if (m.index > last) {
+                parts.push(escHtml(str.slice(last, m.index)));
+            }
+            var linkText   = escHtml(m[1]);
+            var linkUrl    = escHtml(m[2]);
+            var targetAttr = m[3] ? ' target="_blank" rel="noopener noreferrer"' : '';
+            parts.push('<a href="' + linkUrl + '"' + targetAttr + ' class="wur-faq-link">' + linkText + '</a>');
+            last = re.lastIndex;
+        }
+        // resto del texto
+        if (last < str.length) {
+            parts.push(escHtml(str.slice(last)));
+        }
+        return parts.join('');
     }
 
     // Init

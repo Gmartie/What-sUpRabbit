@@ -244,3 +244,13 @@
     color: #aaa;
     margin-top: 7px;
 }
+
+/* ── Links dentro de respuestas FAQ ─────────────────────────────────── */
+.wur-faq-link {
+    color: #1a8a4e;
+    text-decoration: underline;
+    word-break: break-word;
+}
+.wur-faq-link:hover {
+    color: #145e36;
+}
